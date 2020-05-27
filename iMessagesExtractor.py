@@ -1,9 +1,9 @@
 #Python3 Script To Obtain All Message History Present On Mac. 
 #The Below Code Was Adopted From Yorgos Askalidis (GitHub: yortos).
-#Therefore, All Credits Go To Him.
+#Therefore, All Credits Go To Their Team.
 
-#Here Is The Link To His GitHub Repository For The Tutortial 
-#	+ Containing More Information On iMessage Data Extraction:
+#Here Is The Link To Their GitHub Repository For The Tutortial 
+#	+ Containing More Information On iMessages Data Extraction:
 #		https://github.com/yortos/imessage-analysis
 
 #Python3 Library Import.
