@@ -1,0 +1,11 @@
+Jai Sri Rama
+Om Namah Shivaya
+Har Har Mahadev
+
+My Side-Project Name: iMessagesAnalyzer
+	Desired Functionality: 	
+		- Store All iMessages Data From Current User Mac
+			In A Formatted CSV File.
+		- Run Sentiment Analysis On Sent Messages.
+		- Peridocially Compute New Messages 
+			+ Email User w/ Sentiment Data.
