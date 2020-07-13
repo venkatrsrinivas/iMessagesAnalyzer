@@ -57,7 +57,6 @@ allMergeData = pandas.merge(allMessagesData[['text', 'handle_id', 'date','messag
 #Now Merge Messages w/ Chats.
 finalMessagesData = pandas.merge(allMergeData, allChatMessageJoinData[['chat_id', 'message_id']], on = 'message_id', how='left')
 
-
 #Random Debugging. 
 #Can Write Code To Extract Messages To/From A Particular Phone Number.
 #print(finalMessagesData['phone_number'])
