@@ -40,20 +40,27 @@ def getAllSentMessages(inputFileName, startTimeStamp):
 			if(currentIsSent):
 				allSentMessages.append((currentTimeStamp, currentTextValue))
 		prevTimeStamp = currentTimeStamp;
-	print(len(allSentMessages))
+	#Return All Sent Messages.
 	return allSentMessages
 
 #Main Function For Running Sentiment Analysis,
 #Based On Specifically Formatted CSV File 
 #From iMessagesDataExtractor.py Extractor.
 def runSentimentAnalysisAlgorithm(allSentMessages):
+	#Setup For Tensor Flow + Machine Learning Algorithm.
 	return
 
 #For Testing Purposes Only:
 def main(inputFileName, prevLogDateTime):
-	if(prevLogDateTime != None):
+	#Adjust Previous Log Date Time To Allow For Comparison Of Dates.
+	if(prevLogDateTime != None or type(prevLogDateTime) != datetime):
 		prevLogDateTime = datetime.strptime(prevLogDateTime, '%Y-%m-%d %H:%M:%S')
-	getAllSentMessages(inputFileName, prevLogDateTime)
+	#Compute All Sent Messages.
+	allSentMessages = getAllSentMessages(inputFileName, prevLogDateTime)
+	#Run Sentiment Analysis ML/NLP Algorithms.
+	runSentimentAnalysisAlgorithm(allSentMessages)
+	#Return Appropriate Sentiment Data Back To Caller.
+	return [];
 
 if __name__ == '__main__':
 	main("/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv", "2020-06-20 12:53:20")
