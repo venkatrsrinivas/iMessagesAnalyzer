@@ -57,6 +57,7 @@ def runSentimentAnalysisAlgorithm(allSentMessages):
 		return [];
 	#Threshold For Negative-Text Message Classification = 0.5 Probability.
 	#Return Pairing (CurrentText, Sentiment Classification).
+	#Combines Three Types of Sentiment Analyzer + Weights Them.
 	#Initialize Vader Sentiment Analyzer:
 	currentAnalyzer = SentimentIntensityAnalyzer()
 	for currentMessage in allSentMessages:

@@ -9,7 +9,3 @@ My Side-Project Name: iMessagesAnalyzer
 		- Run Sentiment Analysis On Sent Messages.
 		- Peridocially Compute New Messages 
 			+ Email User w/ Sentiment Data.
-
-Twitter API Keys:
-	API Key: VW957QXqWPcuPnp3ClkWUQWJo
-	API Secret Key:
