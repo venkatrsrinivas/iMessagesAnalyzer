@@ -9,3 +9,6 @@ My Side-Project Name: iMessagesAnalyzer
 		- Run Sentiment Analysis On Sent Messages.
 		- Peridocially Compute New Messages 
 			+ Email User w/ Sentiment Data.
+
+	Email: vsrdev23@gmail.com
+	Password: 23@JustTestAccount

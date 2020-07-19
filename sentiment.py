@@ -44,7 +44,7 @@ def getAllSentMessages(inputFilePath, startTimeStamp):
 				allSentMessages.append((currentTimeStamp, currentTextValue))
 		prevTimeStamp = currentTimeStamp;
 	#Return All Sent Messages.
-	print(allSentMessages)
+	#print(allSentMessages)
 	return allSentMessages
 
 #Main Function For Running Sentiment Analysis,
@@ -59,14 +59,18 @@ def runSentimentAnalysisAlgorithm(allSentMessages):
 	#Return Pairing (CurrentText, Sentiment Classification).
 	#Combines Three Types of Sentiment Analyzer + Weights Them.
 	#Initialize Vader Sentiment Analyzer:
+	allSentimentData = [];
 	currentAnalyzer = SentimentIntensityAnalyzer()
 	for currentMessage in allSentMessages:
 		#Replace In Case For Emojis:
+		initialText = currentMessage[1]
 		currentText = emoji.demojize(currentMessage[1]).replace(":", "").replace("_", " ")
 		#Run Text Blob Sentiment Analyzer:
 		currentSentiment = TextBlob(currentText).sentiment
 		#Output All Sentiment Data.
-		print(currentText, currentSentiment, currentAnalyzer.polarity_scores(currentText))
+		#print(currentText, currentSentiment, currentAnalyzer.polarity_scores(currentText))
+		print(initialText, currentAnalyzer.polarity_scores(currentText)['compound'])
+		allSentimentData.append((initialText, currentAnalyzer.polarity_scores(currentText)['compound']));
 
 #For Testing Purposes Only:
 def main(inputFilePath, prevLogDateTime):
@@ -82,3 +86,4 @@ def main(inputFilePath, prevLogDateTime):
 
 if __name__ == '__main__':
 	main("/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv", "2020-06-20 12:53:20")
+
