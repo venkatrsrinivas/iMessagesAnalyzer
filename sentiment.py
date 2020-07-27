@@ -16,8 +16,8 @@ from datetime import datetime
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-
-def TensorFlow():
+#Home-Made Sentiment Analysis:
+def runHomeMadeSentimentComputation():
 	return
 
 def convertAllEmojis(currentText):
@@ -44,7 +44,6 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 	#Return Pairing (CurrentText, Sentiment Classification).
 	#Combines Three Types of Sentiment Analyzer + Weights Them.
 	#Initialize Vader Sentiment Analyzer:
-	allSentMessages = [("", "Hello :)"), ("", "6:30-7:00"), ("", "Hello :)")];
 	allSentimentData = [];
 	currentAnalyzer = SentimentIntensityAnalyzer()
 	for currentMessage in allSentMessages:
@@ -52,7 +51,7 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		initialText = currentMessage[1]
 		#Replace Emoji w/ Relevant Text Fields.
 		currentText = convertAllEmojis(initialText);
-		print(initialText, currentText)
+		#print(initialText, currentText)
 		#Run Text Blob Sentiment Analyzer:
 		currentSentiment = TextBlob(currentText).sentiment
 		#Debug Output For Understanding Sentiment:
@@ -66,48 +65,61 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 #Based On Input File Name,
 #Stores All iMessages Sent From User.
 #Solely Dependent On Formatted CSV File.
-def getAllSentMessages(inputFilePath, startTimeStamp):
+def getAllSentMessages(inputFilePath, prevComputeIndex):
 	#Open CSV File. 
 	#currentFileReader = open(inputFileName, "r")
 	allDesiredColumnValues = ['text', 'timestamp','is_sent', 'phone_number']
 	allExtractData = pandas.read_csv(inputFilePath, usecols=allDesiredColumnValues)
 	allSentMessages = []
+	currentIndex = 0;
+
 	#Helper Variable To Maintain Prev Time Stamp While Looping.
-	prevTimeStamp = None
+	#prevTimeStamp = None
 	#Loop Through Rows From CSV File.
+
 	for currentData in allExtractData.iterrows():
 		#Extract Data From Pandas Data-Frame:
 		currentRowValue, (currentTextValue, currentTimeStamp, currentIsSent, currentPhoneNumber) = currentData
+		
+		#Old Date-Time Related Code.
 		#Error-Check For Current Time Stamp As Empty + Not Proper String:
-		if(not(isinstance(currentTimeStamp, str))):
-			#Simply Set Current Time Stamp = Prev Time Stamp,
-			#Which May Possibly Be None.s
-			currentTimeStamp = prevTimeStamp;	
-		else:
-			currentTimeStamp = datetime.strptime(currentTimeStamp, '%Y-%m-%d %H:%M:%S')
+		# if(not(isinstance(currentTimeStamp, str))):
+		# 	#Simply Set Current Time Stamp = Prev Time Stamp,
+		# 	#Which May Possibly Be None.
+		# 	currentTimeStamp = prevTimeStamp;	
+		# else:
+		# 	currentTimeStamp = datetime.strptime(currentTimeStamp, '%Y-%m-%d %H:%M:%S')
 		#Comparing TimeStamps To Store Only Messages >= startTimeStamp:
-		if(startTimeStamp == None 
-			or currentTimeStamp == None 
-			or currentTimeStamp >= startTimeStamp):
-			#Assert Message Is Sent.
+		# if(startTimeStamp == None 
+		# 	or currentTimeStamp == None 
+		# 	or currentTimeStamp >= startTimeStamp):
+
+		#Skip Over Rows Already Visited.
+		if(currentIndex >= prevComputeIndex):
+			#Assert Message Is Sent From Current Device Owner.
 			if(currentIsSent):
 				allSentMessages.append((currentTimeStamp, currentTextValue))
-		prevTimeStamp = currentTimeStamp;
+		#prevTimeStamp = currentTimeStamp;
+		#Increment Counter For Current Row Visited.
+		currentIndex += 1;
 	#Return All Sent Messages.
 	#print(allSentMessages)
-	return allSentMessages
+	return (allSentMessages, currentIndex)
 
 #For Testing Purposes Only:
-def main(inputFilePath, prevLogDateTime):
+def main(inputFilePath, prevComputeIndex):
+	#NOTE: Initially I Had It So That Data Was Computed After A Particular Date-Time.
+	#But To Be Safe + Accurate, Simply Store # Last Visited Row.
+	#Comparing TimeStamps To Store Only Messages >= startTimeStamp:
 	#Adjust Previous Log Date Time To Allow For Comparison Of Dates.
-	if(prevLogDateTime != None or type(prevLogDateTime) != datetime):
-		prevLogDateTime = datetime.strptime(prevLogDateTime, '%Y-%m-%d %H:%M:%S')
+	# if(prevLogDateTime != None or type(prevLogDateTime) != datetime):
+	# 	prevLogDateTime = datetime.strptime(prevLogDateTime, '%Y-%m-%d %H:%M:%S')
 	#Compute All Sent Messages.
-	allSentMessages = getAllSentMessages(inputFilePath, prevLogDateTime)
+	allSentMessages, lastVisitedIndex = getAllSentMessages(inputFilePath, prevComputeIndex)
 	#Run Sentiment Analysis ML/NLP Algorithms.
-	runAllSentimentAnalysisAlgorithms(allSentMessages)
 	#Return Appropriate Sentiment Data Back To Caller.
-	return [];
+	#print(allSentMessages)
+	return (runAllSentimentAnalysisAlgorithms(allSentMessages), lastVisitedIndex)
 
 if __name__ == '__main__':
 	main("/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv", "2020-06-20 12:53:20")
