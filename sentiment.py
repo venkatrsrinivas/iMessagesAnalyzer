@@ -20,7 +20,9 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 def runHomeMadeSentimentComputation():
 	return
 
-def convertAllEmojis(currentText):
+#Helper Function To Properly Handle Special Cases 
+#w/ Emo = Emojis + Emoticons.
+def convertAllEmo(currentText):
 	#Convert All Real Emojis To Readable Text.
 	for currentEmoji in UNICODE_EMO:
 		currentText = currentText.replace(currentEmoji, " ".join(UNICODE_EMO[currentEmoji].replace("_", " ").replace(",","").replace(":","").split()))
@@ -49,8 +51,8 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 	for currentMessage in allSentMessages:
 		#Make Copy Of Current Text To Match w/ Ouput Sentiment.
 		initialText = currentMessage[1]
-		#Replace Emoji w/ Relevant Text Fields.
-		currentText = convertAllEmojis(initialText);
+		#Replace Emoji + Emoticons w/ Relevant Text Fields.
+		currentText = convertAllEmo(initialText);
 		#print(initialText, currentText)
 		#Run Text Blob Sentiment Analyzer:
 		currentSentiment = TextBlob(currentText).sentiment
