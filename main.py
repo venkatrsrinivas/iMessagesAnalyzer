@@ -26,24 +26,24 @@ def main():
 	#Current Basic Implementation: Assume User Is Subscribed.
 	#Prompt User To Understand Whether They Have An Account.
 	
-	print("Welcome To iMessagesSentimentAnalyzer, Your Own iMessages Data Sentiment Analysis Client.");
-	existUserEmail = input("Enter Your Registered Email. If Not Registered, Still Enter Your Desired Email For Communication.\n");
+	print("Welcome To iMessagesSentimentAnalyzer, Your Own iMessages Data Sentiment Analysis Client.\n");
+	existUserEmail = input("Enter Your User-Email, Even If You Are Not Registered: ");
 	#Filter User Objects By Distinct Email.
 	allExistObjects = User.objects.filter(currentEmail=existUserEmail);
 	existUserObject = None
 	#Special Case: User Is Currently Un-Registered.
 	if(len(allExistObjects) == 0):
-		print("Hello! It Seems That You Are Currently Not Registered.");
+		print("\nHello! It Seems That You Are Currently Not Registered.");
 		#Grab User Input For Other Key Parameters.
-		newUserName = input("Enter Your Name:\n");
+		newUserName = input("Enter Your Preferred User-Name: ");
 		newUserEmail = existUserEmail;
 		newUserIndex = 1;
-		print("Now, We Must Identify The Path To Your chat.db Chat Database File.");
-		print("For Example, This May Look Something Like The Following: /Users/vsrinivas321/Library/Messages/chat.db");
-		newUserReadPath = input("Search Your Apple Device For The Path To Your chat.db File + Correctly Input It Below.\n")
-		print("Finally, Enter The Desired Path To Write All Of Your Apple iMessages CSV Data. This Is The Path To The File Where All Of The Key Data Will Be Stored.")
-		print("For Example, This May Look Something Like The Following: /Users/vsrinivas321/Documents/VSR_iMessages_Data.csv");
-		newUserWritePath = input("Search Your Apple Device For The Desired Path To Output Extracted Data.\n")
+		print("\nNow, We Must Identify The Path To Your chat.db Chat Database File.");
+		print("For Example, This May Look Something Like The Following: /Users/vsrinivas321/Library/Messages/chat.db\n");
+		newUserReadPath = input("Enter Your Current Chat Database Path: ")
+		print("\nFinally, Enter The Desired Path To Store All Of Your Apple iMessages CSV Data.")
+		print("For Example, This May Look Something Like The Following: /Users/vsrinivas321/Documents/VSR_iMessages_Data.csv\n");
+		newUserWritePath = input("Enter Your Current Desired Path To Output Extracted Data: ")
 		existUserObject = User(currentEmail=newUserEmail,
 								currentName=newUserName, 					
 								currentPathToRead=newUserReadPath,
@@ -56,6 +56,7 @@ def main():
 
 	#At This Point, The Existing User Object Should Have
 	#Been Appropriately Created Or Simply Found.
+	print();
 	isSuccessExtract = extract.populateMessagesDataToCSV(existUserObject.currentPathToRead, existUserObject.currentPathToWrite)
 	if(isSuccessExtract < 0):
 		print("Fatal Error: Could Not Extract Desired Data.")

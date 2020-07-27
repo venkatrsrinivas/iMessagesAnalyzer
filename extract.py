@@ -77,9 +77,9 @@ def populateMessagesDataToCSV(inputPathToRead, inputPathToWrite):
 
 	#Note: Replace vsrinivas321 w/ Apple ID Mac Username.
 	#Output To CSV For File Viewing.
-	print("START: Finished Extracting + Formatting iMessages Data + Outputting To CSV.")
+	print("Start: Extracted + Formatted iMessages Data => Output To CSV.")
 	finalMessagesData.to_csv(inputPathToWrite, index = False, encoding='utf-8')
-	print("END: Finished Output To CSV. All iMessages Data Ready For Viewing.")
+	print("End: Finished Output To CSV => All iMessages Data Ready For Viewing.")
 	return 0;
 
 #Main Driver Functions:
