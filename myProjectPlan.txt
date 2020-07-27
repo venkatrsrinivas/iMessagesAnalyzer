@@ -12,3 +12,7 @@ My Side-Project Name: iMessagesAnalyzer
 
 	Email: vsrdev23@gmail.com
 	Password: 23@JustTestAccount
+	Chat Database File:
+		/Users/vsrinivas321/Library/Messages/chat.db
+	Output CSV FIle Path:
+		/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv
