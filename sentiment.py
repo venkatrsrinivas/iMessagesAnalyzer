@@ -8,10 +8,60 @@ Har Har Mahadev
 import sys
 import csv
 import pandas
-from datetime import datetime
-from textblob import TextBlob
 import emoji
+import re
+from emot.emo_unicode import UNICODE_EMO, EMOTICONS
+from datetime import datetime
+#Key Sentiment Analysis Import Statements.
+from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+
+def TensorFlow():
+	return
+
+def convertAllEmojis(currentText):
+	#Convert All Real Emojis To Readable Text.
+	for currentEmoji in UNICODE_EMO:
+		currentText = currentText.replace(currentEmoji, " ".join(UNICODE_EMO[currentEmoji].replace("_", " ").replace(",","").replace(":","").split()))
+	#Convert All String Representations Of Emojis To Readable Text.
+	for currentEmoji in EMOTICONS:
+		#print(currentEmoji, EMOTICONS[currentEmoji])
+		allTextData = currentText.split();
+		#currentText = re.sub(r'\b'+currentEmoji+'\b', " ".join(EMOTICONS[currentEmoji].replace(",","").split()), currentText)
+		currentText = re.sub(u'( '+currentEmoji+')', " " + " ".join(EMOTICONS[currentEmoji].replace(",","").split()), currentText)
+	return currentText
+
+#Main Function For Running Sentiment Analysis,
+#Based On Specifically Formatted CSV File 
+#From iMessagesDataExtractor.py Extractor.
+def runAllSentimentAnalysisAlgorithms(allSentMessages):
+	#Setup For Tensor Flow + Machine Learning Algorithm.
+	#In-Case No Messages Were Sent In Desired Time Frame.
+	if(len(allSentMessages) == 0):
+		return [];
+	#Threshold For Negative-Text Message Classification = 0.5 Probability.
+	#Return Pairing (CurrentText, Sentiment Classification).
+	#Combines Three Types of Sentiment Analyzer + Weights Them.
+	#Initialize Vader Sentiment Analyzer:
+	allSentMessages = [("", "Hello :)"), ("", "6:30-7:00"), ("", "Hello :)")];
+	allSentimentData = [];
+	currentAnalyzer = SentimentIntensityAnalyzer()
+	for currentMessage in allSentMessages:
+		#Make Copy Of Current Text To Match w/ Ouput Sentiment.
+		initialText = currentMessage[1]
+		#Replace Emoji w/ Relevant Text Fields.
+		currentText = convertAllEmojis(initialText);
+		print(initialText, currentText)
+		#Run Text Blob Sentiment Analyzer:
+		currentSentiment = TextBlob(currentText).sentiment
+		#Debug Output For Understanding Sentiment:
+		#print(currentText, currentSentiment, currentAnalyzer.polarity_scores(currentText))
+		#print(initialText, currentAnalyzer.polarity_scores(currentText)['compound'])
+		#Output All Sentiment Data.
+		allSentimentData.append((initialText, currentAnalyzer.polarity_scores(currentText)['compound']));
+
+	#return computeAllNegativeMessages(allSentimentData)
 
 #Based On Input File Name,
 #Stores All iMessages Sent From User.
@@ -47,31 +97,6 @@ def getAllSentMessages(inputFilePath, startTimeStamp):
 	#print(allSentMessages)
 	return allSentMessages
 
-#Main Function For Running Sentiment Analysis,
-#Based On Specifically Formatted CSV File 
-#From iMessagesDataExtractor.py Extractor.
-def runSentimentAnalysisAlgorithm(allSentMessages):
-	#Setup For Tensor Flow + Machine Learning Algorithm.
-	#In-Case No Messages Were Sent In Desired Time Frame.
-	if(len(allSentMessages) == 0):
-		return [];
-	#Threshold For Negative-Text Message Classification = 0.5 Probability.
-	#Return Pairing (CurrentText, Sentiment Classification).
-	#Combines Three Types of Sentiment Analyzer + Weights Them.
-	#Initialize Vader Sentiment Analyzer:
-	allSentimentData = [];
-	currentAnalyzer = SentimentIntensityAnalyzer()
-	for currentMessage in allSentMessages:
-		#Replace In Case For Emojis:
-		initialText = currentMessage[1]
-		currentText = emoji.demojize(currentMessage[1]).replace(":", "").replace("_", " ")
-		#Run Text Blob Sentiment Analyzer:
-		currentSentiment = TextBlob(currentText).sentiment
-		#Output All Sentiment Data.
-		#print(currentText, currentSentiment, currentAnalyzer.polarity_scores(currentText))
-		print(initialText, currentAnalyzer.polarity_scores(currentText)['compound'])
-		allSentimentData.append((initialText, currentAnalyzer.polarity_scores(currentText)['compound']));
-
 #For Testing Purposes Only:
 def main(inputFilePath, prevLogDateTime):
 	#Adjust Previous Log Date Time To Allow For Comparison Of Dates.
@@ -80,7 +105,7 @@ def main(inputFilePath, prevLogDateTime):
 	#Compute All Sent Messages.
 	allSentMessages = getAllSentMessages(inputFilePath, prevLogDateTime)
 	#Run Sentiment Analysis ML/NLP Algorithms.
-	runSentimentAnalysisAlgorithm(allSentMessages)
+	runAllSentimentAnalysisAlgorithms(allSentMessages)
 	#Return Appropriate Sentiment Data Back To Caller.
 	return [];
 
