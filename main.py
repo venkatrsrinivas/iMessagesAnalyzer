@@ -61,7 +61,9 @@ def main():
 	if(isSuccessExtract < 0):
 		print("Fatal Error: Could Not Extract Desired Data.")
 		return;
-	allSentimentData, lastVisitedIndex = sentiment.main(existUserObject.currentPathToWrite, existUserObject.prevComputeIndex)
+	allNegativeData, lastVisitedIndex = sentiment.main(existUserObject.currentPathToWrite, existUserObject.prevComputeIndex)
+	for currentNegativeData in allNegativeData:
+		print(currentNegativeData)
 	existUserObject.prevComputeIndex = lastVisitedIndex;
 	existUserObject.save();
 

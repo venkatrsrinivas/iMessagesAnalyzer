@@ -16,3 +16,10 @@ My Side-Project Name: iMessagesAnalyzer
 		/Users/vsrinivas321/Library/Messages/chat.db
 	Output CSV FIle Path:
 		/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv
+
+	Future Goals:
+		- Improve Sentiment Analysis Quality. 	
+		- Protect Against "Generic Messages".
+		- Detect If Messages Are Actually Meaningful w/ Sentiment.
+		- Include Periodic Running Script.
+		- Transform Into A ReactJS-Django Website. 

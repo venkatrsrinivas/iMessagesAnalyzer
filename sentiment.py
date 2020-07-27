@@ -20,6 +20,26 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 def runHomeMadeSentimentComputation():
 	return
 
+#Compute All Negatively Connotated Messages:
+def computeAllNegativeMessages(allSentimentData):
+	#Sort Tuples In All Sentiment Data Based On First Value.
+	allSentimentData.sort(key = lambda currentPair: currentPair[0])
+	#Return First 10 Elements.
+	allTenNegativeData = [];
+	for k in range(0, 9):
+		allTenNegativeData.append(allSentimentData[k][1])
+	return allTenNegativeData
+
+#Compute All Positively Connotated Messages:
+def computeAllPositiveMessages(allSentimentData):
+	#Sort Tuples In All Sentiment Data Based On First Value.
+	allSentimentData.sort(key = lambda currentPair: currentPair[0])
+	#Return First 10 Elements.
+	allTenNegativeData = [];
+	for k in range(1, 10):
+		allTenNegativeData.append(allSentimentData[-k][1])
+	return allTenNegativeData
+
 #Helper Function To Properly Handle Special Cases 
 #w/ Emo = Emojis + Emoticons.
 def convertAllEmo(currentText):
@@ -38,6 +58,7 @@ def convertAllEmo(currentText):
 #Based On Specifically Formatted CSV File 
 #From iMessagesDataExtractor.py Extractor.
 def runAllSentimentAnalysisAlgorithms(allSentMessages):
+	print("Start: About To Run All Sentiment Analysis Algorithms.")
 	#Setup For Tensor Flow + Machine Learning Algorithm.
 	#In-Case No Messages Were Sent In Desired Time Frame.
 	if(len(allSentMessages) == 0):
@@ -60,9 +81,11 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		#print(currentText, currentSentiment, currentAnalyzer.polarity_scores(currentText))
 		#print(initialText, currentAnalyzer.polarity_scores(currentText)['compound'])
 		#Output All Sentiment Data.
-		allSentimentData.append((initialText, currentAnalyzer.polarity_scores(currentText)['compound']));
+		combineSentimentValue = currentAnalyzer.polarity_scores(currentText)['compound']
+		allSentimentData.append((combineSentimentValue, initialText));
 
-	#return computeAllNegativeMessages(allSentimentData)
+	print("End: Computed All Combined Sentiment Values.")
+	return computeAllNegativeMessages(allSentimentData)
 
 #Based On Input File Name,
 #Stores All iMessages Sent From User.
