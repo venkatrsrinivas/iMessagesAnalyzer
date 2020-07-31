@@ -27,14 +27,14 @@ def main():
 	#Current Basic Implementation: Assume User Is Subscribed.
 	#Prompt User To Understand Whether They Have An Account.
 	
-	print("Welcome To iMessagesSentimentAnalyzer, Your Own iMessages Data Sentiment Analysis Client.\n");
+	print("Hello! Welcome To iMessagesSentimentAnalyzer! => Your Own iMessages Data Sentiment Analysis Client.\n");
 	existUserEmail = input("Enter Your User-Email, Even If You Are Not Registered: ");
 	#Filter User Objects By Distinct Email.
 	allExistObjects = User.objects.filter(currentEmail=existUserEmail);
 	existUserObject = None
 	#Special Case: User Is Currently Un-Registered.
 	if(len(allExistObjects) == 0):
-		print("\nHello! It Seems That You Are Currently Not Registered.");
+		print("\nIt Seems That You Are Currently Not Registered.");
 		#Grab User Input For Other Key Parameters.
 		newUserName = input("Enter Your Preferred User-Name: ");
 		newUserEmail = existUserEmail;
