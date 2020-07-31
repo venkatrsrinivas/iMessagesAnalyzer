@@ -24,7 +24,7 @@ def createMessageObject(inputFromAddress, inputToAddress,
 	return currentMessageObject
 
 #Helper Function To Open SMTP Server + Send Email Data.
-def send(inputFromAddress, inputToAddress, 
+def runSendMail(inputFromAddress, inputToAddress, 
 	inputPasswordData, currentMessageObject):
 	smtpobj = smtplib.SMTP('smtp.gmail.com', 587)
 	smtpobj.ehlo()
@@ -36,16 +36,17 @@ def send(inputFromAddress, inputToAddress,
 
 #Simple Script That Sends An Email 
 #Given Input Email Address + Input Text Blocks.
-def sendTimedEmails(inputEmailAddress, inputTextPackage):
+def sendTimedEmails(inputEmailAddress, inputSubjectData, inputBodyData):
 	currentFromAddress = 'vsrdev23@gmail.com'
 	currentPasswordData = '23@JustTestAccount'
-	currentToAddress = 'venkatrsrinivas@gmail.com'
-	currentSubjectData = 'Hello! Introducing Me.'
-	currentBodyData = 'Hello Me! This Is A Test Email From You, Via Python3.'
+	currentToAddress = inputEmailAddress
+	currentSubjectData = inputSubjectData
+	currentBodyData = inputBodyData
 	currentMessageObject = createMessageObject(currentFromAddress, currentToAddress, 
 		currentSubjectData, currentBodyData)
-	send(currentFromAddress, currentToAddress, currentPasswordData, currentMessageObject)
+	runSendMail(currentFromAddress, currentToAddress, currentPasswordData, currentMessageObject)
 
 #Automatically Invoked Main Driver Function:
 if __name__ == '__main__':
-	sendTimedEmails("", "");
+	sendTimedEmails("", "", "");
+

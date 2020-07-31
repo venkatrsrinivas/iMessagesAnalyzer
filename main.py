@@ -9,8 +9,9 @@ import os
 import django
 import extract
 import sentiment
+import send
 
-#Necessary Setup To Import Models:
+#Necessary Setup To Import Register Models:
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "iMessagesAnalyzer.settings")
 django.setup()
 
@@ -61,12 +62,30 @@ def main():
 	if(isSuccessExtract < 0):
 		print("Fatal Error: Could Not Extract Desired Data.")
 		return;
-	allNegativeData, lastVisitedIndex = sentiment.main(existUserObject.currentPathToWrite, existUserObject.prevComputeIndex)
-	for currentNegativeData in allNegativeData:
-		print(currentNegativeData)
+	(allPositiveData, allNegativeData), lastVisitedIndex = sentiment.main(existUserObject.currentPathToWrite, existUserObject.prevComputeIndex)
 	existUserObject.prevComputeIndex = lastVisitedIndex;
 	existUserObject.save();
-
+	#Format Data Into Single String:
+	allBodyData = "Hello " + existUserObject.currentName + "!\n";
+	allBodyData += "Below Are Your Most Recent Results:\n";
+	#Loop Through All Positive Data:
+	if(len(allPositiveData) == 0):
+		allBodyData += "No Positive Data Found.\n";
+	else:
+		allBodyData += "Top " + str(len(allPositiveData)) + " Positively Found Messages:\n";
+		for k in range(0, len(allPositiveData)):
+			allBodyData += "\t" + str(k+1) + ". " + allPositiveData[k] + "\n";
+	#Loop Through All Negative Data:
+	if(len(allNegativeData) == 0):
+		allBodyData += "No Negative Data Found.\n";
+	else:
+		allBodyData += "Top " + str(len(allPositiveData)) + " Negatively Found Messages:\n";
+		for k in range(0, len(allNegativeData)):
+			allBodyData += "\t" + str(k+1) + ". " + allNegativeData[k] + "\n";
+	allBodyData += "\nBest Regards,\n";
+	allBodyData += "Venkat Srinivas\n";
+	allSubjectData = "Hello, From Your iMessagesAnalyzer Client!"
+	send.sendTimedEmails(existUserObject.currentEmail, allSubjectData, allBodyData);
 #Main Driver Functions:	
 if __name__ == '__main__':
 	main()

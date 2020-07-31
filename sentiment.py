@@ -16,7 +16,7 @@ from datetime import datetime
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-#Home-Made Sentiment Analysis:
+#"Home-Made" TensorFlow Sentiment Analysis:
 def runHomeMadeSentimentComputation():
 	return
 
@@ -24,10 +24,14 @@ def runHomeMadeSentimentComputation():
 def computeAllNegativeMessages(allSentimentData):
 	#Sort Tuples In All Sentiment Data Based On First Value.
 	allSentimentData.sort(key = lambda currentPair: currentPair[0])
-	#Return First 10 Elements.
+	#Return First 10 Unique Elements.
 	allTenNegativeData = [];
-	for k in range(0, 9):
-		allTenNegativeData.append(allSentimentData[k][1])
+	k = 0; 
+	while(k < len(allSentimentData) and len(allTenNegativeData) < 10):
+		currentText = allSentimentData[k][1].replace("\n", " ");
+		if(not(currentText in allTenNegativeData)):
+			allTenNegativeData.append(currentText);
+		k += 1;
 	return allTenNegativeData
 
 #Compute All Positively Connotated Messages:
@@ -37,7 +41,9 @@ def computeAllPositiveMessages(allSentimentData):
 	#Return First 10 Elements.
 	allTenNegativeData = [];
 	for k in range(1, 10):
-		allTenNegativeData.append(allSentimentData[-k][1])
+		if(k >= len(allSentimentData)):
+			break;
+		allTenNegativeData.append(allSentimentData[-k][1].replace("\n", " "))
 	return allTenNegativeData
 
 #Helper Function To Properly Handle Special Cases 
@@ -85,7 +91,11 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		allSentimentData.append((combineSentimentValue, initialText));
 
 	print("End: Computed All Combined Sentiment Values.")
-	return computeAllNegativeMessages(allSentimentData)
+	allNegativeData = computeAllNegativeMessages(allSentimentData)
+	allPositiveData = computeAllPositiveMessages(allSentimentData)
+	#Let Client Format Data Appropriately As Desired.
+	return (allPositiveData, allNegativeData)
+
 
 #Based On Input File Name,
 #Stores All iMessages Sent From User.
@@ -147,5 +157,5 @@ def main(inputFilePath, prevComputeIndex):
 	return (runAllSentimentAnalysisAlgorithms(allSentMessages), lastVisitedIndex)
 
 if __name__ == '__main__':
-	main("/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv", "2020-06-20 12:53:20")
+	main("/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv", 1)
 
