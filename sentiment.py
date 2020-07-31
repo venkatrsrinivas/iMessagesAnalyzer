@@ -40,7 +40,7 @@ def computeAllPositiveMessages(allSentimentData):
 	allSentimentData.sort(key = lambda currentPair: currentPair[0])
 	#Return First 10 Elements.
 	allTenNegativeData = [];
-	for k in range(1, 10):
+	for k in range(1, 11):
 		if(k >= len(allSentimentData)):
 			break;
 		allTenNegativeData.append(allSentimentData[-k][1].replace("\n", " "))

@@ -79,7 +79,7 @@ def main():
 	if(len(allNegativeData) == 0):
 		allBodyData += "No Negative Data Found.\n";
 	else:
-		allBodyData += "Top " + str(len(allPositiveData)) + " Negatively Found Messages:\n";
+		allBodyData += "Top " + str(len(allNegativeData)) + " Negatively Found Messages:\n";
 		for k in range(0, len(allNegativeData)):
 			allBodyData += "\t" + str(k+1) + ". " + allNegativeData[k] + "\n";
 	allBodyData += "\nBest Regards,\n";
