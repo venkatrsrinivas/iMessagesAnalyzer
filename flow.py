@@ -43,10 +43,10 @@ def runTrainTestSave():
 	#Convert Trained Model To JSON File.
 	currentJSON = model.to_json()
 	#Write JSON File To Current Directory.
-	with open("allModelData1.json", "w") as currentFile:
+	with open("allModelData.json", "w") as currentFile:
 	   currentFile.write(currentJSON)
 	#Save/Serialize Weights To HDF5 File.
-	model.save_weights("allWeightData1.h5")
+	model.save_weights("allWeightData.h5")
 
 if __name__ == '__main__':
 	runTrainTestSave()
