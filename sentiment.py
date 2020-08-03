@@ -20,37 +20,41 @@ import tensorflow_datasets as tfds
 import tensorflow as tf
 from keras.models import model_from_json
 
-#Global Variables For TensorFlow computations:
-dataset, info = tfds.load('imdb_reviews/subwords8k', with_info=True,
+#Global Variables For TensorFlow Computations:
+dataset, currentInfoData = tfds.load('imdb_reviews/subwords8k', with_info=True,
 							  as_supervised=True)
-encoder = info.features['text'].encoder
-#Load JSON File w/ Model Data + Create Model:
+currentEncoder = currentInfoData.features['text'].encoder
+#Load JSON File w/ Model Data + HDF5 File w/ Weight Data:
 currentModelFile = open("allModelData.json", 'r')
 currentModelReader = currentModelFile.read()
 currentModelFile.close()
-model = model_from_json(currentModelReader)
-#Load Model w/ Weights:
-model.load_weights("allWeightData.h5")
+#Convert JSON File Reader To Model Object.
+currentModel = model_from_json(currentModelReader)
+#Load Model w/ Pre-Computed Weights:
+currentModel.load_weights("allWeightData.h5")
 
-def pad_to_size(vec, size):
-	zeros = [0] * (size - len(vec))
-	vec.extend(zeros)
-	return vec
+#Helper Function To Pad Zeros To Current Vector.
+def runPadZeros(currentVector, desireSize):
+	allZeroData = [0] * (desireSize - len(currentVector))
+	currentVector.extend(allZeroData)
+	return currentVector
 
-def sample_predict(sample_pred_text, pad):
-	encoded_sample_pred_text = encoder.encode(sample_pred_text)
-	if pad:
-		encoded_sample_pred_text = pad_to_size(encoded_sample_pred_text, 64)
-	encoded_sample_pred_text = tf.cast(encoded_sample_pred_text, tf.float32)
-	predictions = model.predict(tf.expand_dims(encoded_sample_pred_text, 0))
-
-	return predictions
+#Helper Function To Predict Based On Model:
+def computeSamplePrediction(inputPredictText, isPadOn):
+	#Encode Input Sample Predict Text To Run Through Model.
+	currentEncodePredictText = currentEncoder.encode(inputPredictText)
+	#Pad Additional Zeros, As NEcessary.
+	if(isPadOn):
+		currentEncodePredictText = runPadZeros(currentEncodePredictText, 64)
+	#Appropriately Cast PRedict Text.
+	currentEncodePredictText = tf.cast(currentEncodePredictText, tf.float32)
+	allPredictionData = currentModel.predict(tf.expand_dims(currentEncodePredictText, 0))
+	return allPredictionData
 
 #"Home-Made" TensorFlow Sentiment Analysis:
-def runHomeMadeSentimentComputation(currentText):
-	sample_pred_text = currentText
-	predictions = sample_predict(sample_pred_text, pad=False)
-	return predictions
+def runHomeMadeSentimentComputation(inputPredictText):
+	allPredictionData = computeSamplePrediction(inputPredictText, isPadOn=False)
+	return allPredictionData
 
 #Compute All Negatively Connotated Messages:
 def computeAllNegativeMessages(allSentimentData):
