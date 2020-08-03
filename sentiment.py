@@ -3,7 +3,7 @@ Jai Sri Rama
 Om Namah Shivaya
 Har Har Mahadev
 '''
-
+ 
 #Import Python3 Libraries:
 import sys
 import csv
@@ -15,10 +15,42 @@ from datetime import datetime
 #Key Sentiment Analysis Import Statements.
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+#TensorFlow Import Statements.
+import tensorflow_datasets as tfds
+import tensorflow as tf
+from keras.models import model_from_json
+
+#Global Variables For TensorFlow computations:
+dataset, info = tfds.load('imdb_reviews/subwords8k', with_info=True,
+							  as_supervised=True)
+encoder = info.features['text'].encoder
+#Load JSON File w/ Model Data + Create Model:
+currentModelFile = open("allModelData.json", 'r')
+currentModelReader = currentModelFile.read()
+currentModelFile.close()
+model = model_from_json(currentModelReader)
+#Load Model w/ Weights:
+model.load_weights("allWeightData.h5")
+
+def pad_to_size(vec, size):
+	zeros = [0] * (size - len(vec))
+	vec.extend(zeros)
+	return vec
+
+def sample_predict(sample_pred_text, pad):
+	encoded_sample_pred_text = encoder.encode(sample_pred_text)
+	if pad:
+		encoded_sample_pred_text = pad_to_size(encoded_sample_pred_text, 64)
+	encoded_sample_pred_text = tf.cast(encoded_sample_pred_text, tf.float32)
+	predictions = model.predict(tf.expand_dims(encoded_sample_pred_text, 0))
+
+	return predictions
 
 #"Home-Made" TensorFlow Sentiment Analysis:
-def runHomeMadeSentimentComputation():
-	return
+def runHomeMadeSentimentComputation(currentText):
+	sample_pred_text = currentText
+	predictions = sample_predict(sample_pred_text, pad=False)
+	return predictions
 
 #Compute All Negatively Connotated Messages:
 def computeAllNegativeMessages(allSentimentData):
@@ -88,6 +120,8 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		#print(initialText, currentAnalyzer.polarity_scores(currentText)['compound'])
 		#Output All Sentiment Data.
 		combineSentimentValue = currentAnalyzer.polarity_scores(currentText)['compound']
+		tValue = runHomeMadeSentimentComputation(currentText)
+		print(currentText, tValue)
 		allSentimentData.append((combineSentimentValue, initialText));
 
 	print("End: Computed All Combined Sentiment Values.")
@@ -119,15 +153,15 @@ def getAllSentMessages(inputFilePath, prevComputeIndex):
 		#Old Date-Time Related Code.
 		#Error-Check For Current Time Stamp As Empty + Not Proper String:
 		# if(not(isinstance(currentTimeStamp, str))):
-		# 	#Simply Set Current Time Stamp = Prev Time Stamp,
-		# 	#Which May Possibly Be None.
-		# 	currentTimeStamp = prevTimeStamp;	
+		#   #Simply Set Current Time Stamp = Prev Time Stamp,
+		#   #Which May Possibly Be None.
+		#   currentTimeStamp = prevTimeStamp;   
 		# else:
-		# 	currentTimeStamp = datetime.strptime(currentTimeStamp, '%Y-%m-%d %H:%M:%S')
+		#   currentTimeStamp = datetime.strptime(currentTimeStamp, '%Y-%m-%d %H:%M:%S')
 		#Comparing TimeStamps To Store Only Messages >= startTimeStamp:
 		# if(startTimeStamp == None 
-		# 	or currentTimeStamp == None 
-		# 	or currentTimeStamp >= startTimeStamp):
+		#   or currentTimeStamp == None 
+		#   or currentTimeStamp >= startTimeStamp):
 
 		#Skip Over Rows Already Visited.
 		if(currentIndex >= prevComputeIndex):
@@ -148,7 +182,7 @@ def main(inputFilePath, prevComputeIndex):
 	#Comparing TimeStamps To Store Only Messages >= startTimeStamp:
 	#Adjust Previous Log Date Time To Allow For Comparison Of Dates.
 	# if(prevLogDateTime != None or type(prevLogDateTime) != datetime):
-	# 	prevLogDateTime = datetime.strptime(prevLogDateTime, '%Y-%m-%d %H:%M:%S')
+	#   prevLogDateTime = datetime.strptime(prevLogDateTime, '%Y-%m-%d %H:%M:%S')
 	#Compute All Sent Messages.
 	allSentMessages, lastVisitedIndex = getAllSentMessages(inputFilePath, prevComputeIndex)
 	#Run Sentiment Analysis ML/NLP Algorithms.
