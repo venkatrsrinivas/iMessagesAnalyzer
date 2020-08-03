@@ -9,7 +9,10 @@ import tensorflow_datasets as tfds
 import tensorflow as tf
 from keras.models import model_from_json
 
-def runTrainTestSave(dataset, info):
+def runTrainTestSave():
+	dataset, info = tfds.load('imdb_reviews/subwords8k', with_info=True,
+							  as_supervised=True)
+	encoder = info.features['text'].encoder
 	train_dataset, test_dataset = dataset['train'], dataset['test']
 	encoder = info.features['text'].encoder
 	BUFFER_SIZE = 10000
