@@ -31,7 +31,7 @@ def populateMessagesDataToCSV(inputPathToRead, inputPathToWrite):
 	except:
 		print("Fatal Error: Could Not Connect To Chat Database File From The Following Path: ", inputPathToRead)
 		#Inform Client w/ Failure Status.
-		return -1;
+		return -1
 
 	#Initialize Current Reader To Extract Data.
 	currentReader = currentConnection.cursor()
@@ -41,7 +41,7 @@ def populateMessagesDataToCSV(inputPathToRead, inputPathToWrite):
 		currentReader.execute(" select name from sqlite_master where type = 'table' ")	
 	except:
 		print("Fatal Error: Could Not Find Desired Table Data.")
-		return -1;
+		return -1
 
 	#Print All Table Data Prior To Reading SQL Data.
 	#Uncomment To View Data Parameters + All Relevant Information Encapsulated.
@@ -80,9 +80,9 @@ def populateMessagesDataToCSV(inputPathToRead, inputPathToWrite):
 	print("Start: Extracted + Formatted iMessages Data => Output To CSV.")
 	finalMessagesData.to_csv(inputPathToWrite, index = False, encoding='utf-8')
 	print("End: Finished Output To CSV => All iMessages Data Ready For Viewing.")
-	return 0;
+	return 0
 
 #Main Driver Functions:
 if __name__ == '__main__':
-	populateMessagesDataToCSV(sys.argv[0], sys.argv[1]);
+	populateMessagesDataToCSV(sys.argv[0], sys.argv[1])
 

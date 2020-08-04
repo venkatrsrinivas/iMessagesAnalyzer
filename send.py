@@ -48,5 +48,5 @@ def sendTimedEmails(inputEmailAddress, inputSubjectData, inputBodyData):
 
 #Automatically Invoked Main Driver Function:
 if __name__ == '__main__':
-	sendTimedEmails("", "", "");
+	sendTimedEmails("", "", "")
 

@@ -61,13 +61,13 @@ def computeAllNegativeMessages(allSentimentData):
 	#Sort Tuples In All Sentiment Data Based On First Value.
 	allSentimentData.sort(key = lambda currentPair: currentPair[0])
 	#Return First 10 Unique Elements.
-	allTenNegativeData = [];
-	k = 0; 
+	allTenNegativeData = []
+	k = 0 
 	while(k < len(allSentimentData) and len(allTenNegativeData) < 10):
-		currentText = allSentimentData[k][1].replace("\n", " ");
+		currentText = allSentimentData[k][1].replace("\n", " ")
 		if(not(currentText in allTenNegativeData)):
-			allTenNegativeData.append(currentText);
-		k += 1;
+			allTenNegativeData.append(currentText)
+		k += 1
 	return allTenNegativeData
 
 #Compute All Positively Connotated Messages:
@@ -75,10 +75,10 @@ def computeAllPositiveMessages(allSentimentData):
 	#Sort Tuples In All Sentiment Data Based On First Value.
 	allSentimentData.sort(key = lambda currentPair: currentPair[0])
 	#Return First 10 Elements.
-	allTenNegativeData = [];
+	allTenNegativeData = []
 	for k in range(1, 11):
 		if(k >= len(allSentimentData)):
-			break;
+			break
 		allTenNegativeData.append(allSentimentData[-k][1].replace("\n", " "))
 	return allTenNegativeData
 
@@ -91,7 +91,7 @@ def convertAllEmo(currentText):
 	#Convert All String Representations Of Emojis To Readable Text.
 	for currentEmoji in EMOTICONS:
 		#print(currentEmoji, EMOTICONS[currentEmoji])
-		allTextData = currentText.split();
+		allTextData = currentText.split()
 		#currentText = re.sub(r'\b'+currentEmoji+'\b', " ".join(EMOTICONS[currentEmoji].replace(",","").split()), currentText)
 		currentText = re.sub(u'( '+currentEmoji+')', " " + " ".join(EMOTICONS[currentEmoji].replace(",","").split()), currentText)
 	return currentText
@@ -104,18 +104,18 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 	#Setup For Tensor Flow + Machine Learning Algorithm.
 	#In-Case No Messages Were Sent In Desired Time Frame.
 	if(len(allSentMessages) == 0):
-		return [];
+		return []
 	#Threshold For Negative-Text Message Classification = 0.5 Probability.
 	#Return Pairing (CurrentText, Sentiment Classification).
 	#Combines Three Types of Sentiment Analyzer + Weights Them.
 	#Initialize Vader Sentiment Analyzer:
-	allSentimentData = [];
+	allSentimentData = []
 	currentAnalyzer = SentimentIntensityAnalyzer()
 	for currentMessage in allSentMessages:
 		#Make Copy Of Current Text To Match w/ Ouput Sentiment.
 		initialText = currentMessage[1]
 		#Replace Emoji + Emoticons w/ Relevant Text Fields.
-		currentText = convertAllEmo(initialText);
+		currentText = convertAllEmo(initialText)
 		#print(initialText, currentText)
 		#Run Text Blob Sentiment Analyzer:
 		currentSentiment = TextBlob(currentText).sentiment
@@ -126,7 +126,7 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		combineSentimentValue = currentAnalyzer.polarity_scores(currentText)['compound']
 		tValue = runHomeMadeSentimentComputation(currentText)
 		print(currentText, tValue)
-		allSentimentData.append((combineSentimentValue, initialText));
+		allSentimentData.append((combineSentimentValue, initialText))
 
 	print("End: Computed All Combined Sentiment Values.")
 	allNegativeData = computeAllNegativeMessages(allSentimentData)
@@ -144,7 +144,7 @@ def getAllSentMessages(inputFilePath, prevComputeIndex):
 	allDesiredColumnValues = ['text', 'timestamp','is_sent', 'phone_number']
 	allExtractData = pandas.read_csv(inputFilePath, usecols=allDesiredColumnValues)
 	allSentMessages = []
-	currentIndex = 0;
+	currentIndex = 0
 
 	#Helper Variable To Maintain Prev Time Stamp While Looping.
 	#prevTimeStamp = None
@@ -159,7 +159,7 @@ def getAllSentMessages(inputFilePath, prevComputeIndex):
 		# if(not(isinstance(currentTimeStamp, str))):
 		#   #Simply Set Current Time Stamp = Prev Time Stamp,
 		#   #Which May Possibly Be None.
-		#   currentTimeStamp = prevTimeStamp;   
+		#   currentTimeStamp = prevTimeStamp   
 		# else:
 		#   currentTimeStamp = datetime.strptime(currentTimeStamp, '%Y-%m-%d %H:%M:%S')
 		#Comparing TimeStamps To Store Only Messages >= startTimeStamp:
@@ -172,9 +172,9 @@ def getAllSentMessages(inputFilePath, prevComputeIndex):
 			#Assert Message Is Sent From Current Device Owner.
 			if(currentIsSent):
 				allSentMessages.append((currentTimeStamp, currentTextValue))
-		#prevTimeStamp = currentTimeStamp;
+		#prevTimeStamp = currentTimeStamp
 		#Increment Counter For Current Row Visited.
-		currentIndex += 1;
+		currentIndex += 1
 	#Return All Sent Messages.
 	#print(allSentMessages)
 	return (allSentMessages, currentIndex)
