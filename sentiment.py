@@ -194,6 +194,11 @@ def main(inputFilePath, prevComputeIndex):
 	#print(allSentMessages)
 	return (runAllSentimentAnalysisAlgorithms(allSentMessages), lastVisitedIndex)
 
+#Main Driver Invoker:
 if __name__ == '__main__':
-	main("/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv", 1)
-
+	inputFilePath = "/Users/vsrinivas321/Documents/VSR_iMessages_Data.csv"
+	#Ask User If They Want To Specify Path:
+	isPathWant = input("Enter 1 = Specify Input File Path, 0 = Use Existing Path From Script.\n")
+	if(str(isPathWant) == "1"):
+		inputFilePath = input("Enter Correct File Path Housing All iMesssages Data.\n")
+	main(inputFilePath, 1)
