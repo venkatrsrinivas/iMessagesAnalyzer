@@ -54,7 +54,7 @@ def computeSamplePrediction(inputPredictText, isPadOn):
 #"Home-Made" TensorFlow Sentiment Analysis:
 def runHomeMadeSentimentComputation(inputPredictText):
 	allPredictionData = computeSamplePrediction(inputPredictText, isPadOn=False)
-	return allPredictionData
+	return allPredictionData[0][0]
 
 #Compute All Negatively Connotated Messages:
 def computeAllNegativeMessages(allSentimentData):
@@ -65,7 +65,7 @@ def computeAllNegativeMessages(allSentimentData):
 	k = 0 
 	while(k < len(allSentimentData) and len(allTenNegativeData) < 10):
 		currentText = allSentimentData[k][1].replace("\n", " ")
-		if(not(currentText in allTenNegativeData)):
+		if(not(currentText in allTenNegativeData) and len(currentText) != 0):
 			allTenNegativeData.append(currentText)
 		k += 1
 	return allTenNegativeData
@@ -75,12 +75,13 @@ def computeAllPositiveMessages(allSentimentData):
 	#Sort Tuples In All Sentiment Data Based On First Value.
 	allSentimentData.sort(key = lambda currentPair: currentPair[0])
 	#Return First 10 Elements.
-	allTenNegativeData = []
-	for k in range(1, 11):
-		if(k >= len(allSentimentData)):
-			break
-		allTenNegativeData.append(allSentimentData[-k][1].replace("\n", " "))
-	return allTenNegativeData
+	allTenPositiveData = []
+	k = 1 
+	while(k <= len(allSentimentData) and len(allTenPositiveData) < 10):
+		if(not(currentText in allTenPositiveData) and len(currentText) != 0):
+			allTenPositiveData.append(allSentimentData[-k][1].replace("\n", " "))
+		k += 1
+	return allTenPositiveData
 
 #Helper Function To Properly Handle Special Cases 
 #w/ Emo = Emojis + Emoticons.
@@ -104,7 +105,7 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 	#Setup For Tensor Flow + Machine Learning Algorithm.
 	#In-Case No Messages Were Sent In Desired Time Frame.
 	if(len(allSentMessages) == 0):
-		return []
+		return ([], [])
 	#Threshold For Negative-Text Message Classification = 0.5 Probability.
 	#Return Pairing (CurrentText, Sentiment Classification).
 	#Combines Three Types of Sentiment Analyzer + Weights Them.
@@ -118,14 +119,14 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		currentText = convertAllEmo(initialText)
 		#print(initialText, currentText)
 		#Run Text Blob Sentiment Analyzer:
-		currentSentiment = TextBlob(currentText).sentiment
+		bValue = TextBlob(currentText).sentiment.polarity
 		#Debug Output For Understanding Sentiment:
 		#print(currentText, currentSentiment, currentAnalyzer.polarity_scores(currentText))
 		#print(initialText, currentAnalyzer.polarity_scores(currentText)['compound'])
 		#Output All Sentiment Data.
-		combineSentimentValue = currentAnalyzer.polarity_scores(currentText)['compound']
+		vValue = currentAnalyzer.polarity_scores(currentText)['compound']
 		tValue = runHomeMadeSentimentComputation(currentText)
-		print(currentText, tValue)
+		combineSentimentValue = (bValue+vValue+tValue)/3
 		allSentimentData.append((combineSentimentValue, initialText))
 
 	print("End: Computed All Combined Sentiment Values.")

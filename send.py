@@ -26,14 +26,16 @@ def createMessageObject(inputFromAddress, inputToAddress,
 #Helper Function To Open SMTP Server + Send Email Data.
 def runSendMail(inputFromAddress, inputToAddress, 
 	inputPasswordData, currentMessageObject):
-	smtpobj = smtplib.SMTP('smtp.gmail.com', 587)
-	smtpobj.ehlo()
-	smtpobj.starttls()
-	smtpobj.ehlo()
-	smtpobj.login(inputFromAddress, inputPasswordData)
-	smtpobj.sendmail(inputFromAddress, inputToAddress, currentMessageObject.as_string())
-	smtpobj.close()
-
+	try:
+		smtpobj = smtplib.SMTP('smtp.gmail.com', 587)
+		smtpobj.ehlo()
+		smtpobj.starttls()
+		smtpobj.ehlo()
+		smtpobj.login(inputFromAddress, inputPasswordData)
+		smtpobj.sendmail(inputFromAddress, inputToAddress, currentMessageObject.as_string())
+		smtpobj.close()
+	except:
+		print("Failure In Connecting To Mail Server. Check WiFi Settings + Try Again.")
 #Simple Script That Sends An Email 
 #Given Input Email Address + Input Text Blocks.
 def sendTimedEmails(inputEmailAddress, inputSubjectData, inputBodyData):

@@ -62,7 +62,9 @@ def main():
 	if(isSuccessExtract < 0):
 		print("Fatal Error: Could Not Extract Desired Data.")
 		return
-	(allPositiveData, allNegativeData), lastVisitedIndex = sentiment.main(existUserObject.currentPathToWrite, existUserObject.prevComputeIndex)
+	allOutputData = sentiment.main(existUserObject.currentPathToWrite, existUserObject.prevComputeIndex)
+	print(allOutputData)
+	(allPositiveData, allNegativeData), lastVisitedIndex = allOutputData
 	existUserObject.prevComputeIndex = lastVisitedIndex
 	existUserObject.save()
 	#Format Data Into Single String:
