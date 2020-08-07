@@ -65,15 +65,12 @@ def computeAllNegativeMessages(allSentimentData):
 	allTenNegativeData = []
 	k = 0 
 	while(k < len(allSentimentData) and len(allTenNegativeData) < 10):
-		print("Initial Text: ", allSentimentData[k][1], len(allSentimentData[k][1]))
-		currentText = allSentimentData[k][1].replace("\n", " ")
-		print("Final Text: ", currentText, len(currentText))
-		tempText = currentText.encode('ascii', 'ignore')
-		if(len(tempText) > 0 and not(currentText == 0x00) and not(currentText and currentText.strip()) and not(str(currentText).isspace())):
+		currentText = allSentimentData[k][1].replace("\n", " ").replace("\uFFFC", "")
+		if(not(currentText == "" or currentText == " ")):
 			if(not(currentText in allTenNegativeData) and len(str(currentText)) > 0):
 				allTenNegativeData.append(currentText)
 		k += 1
-	print(allSentimentData)
+	#print(allSentimentData)
 	return allTenNegativeData
 
 #Compute All Positively Connotated Messages:
@@ -85,9 +82,8 @@ def computeAllPositiveMessages(allSentimentData):
 	k = 1 
 	while(k <= len(allSentimentData) and len(allTenPositiveData) < 10):
 		currentText = allSentimentData[-k][1].replace("\n", " ")
-		tempText = currentText.encode('ascii', 'ignore')
-		if(len(tempText) > 0 and not(currentText == 0x00) and not(currentText and currentText.strip()) and not(str(currentText).isspace())):
-			if(not(currentText in allTenPositiveData) and len(str(currentText)) > 0):
+		if(not(currentText == "" or currentText == " ")):
+			if(not(currentText in allTenPositiveData)):
 				allTenPositiveData.append(currentText)
 		k += 1
 	return allTenPositiveData
