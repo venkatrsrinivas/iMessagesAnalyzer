@@ -19,6 +19,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import tensorflow_datasets as tfds
 import tensorflow as tf
 from keras.models import model_from_json
+import string
 
 #Global Variables For TensorFlow Computations:
 dataset, currentInfoData = tfds.load('imdb_reviews/subwords8k', with_info=True,
@@ -64,10 +65,15 @@ def computeAllNegativeMessages(allSentimentData):
 	allTenNegativeData = []
 	k = 0 
 	while(k < len(allSentimentData) and len(allTenNegativeData) < 10):
+		print("Initial Text: ", allSentimentData[k][1], len(allSentimentData[k][1]))
 		currentText = allSentimentData[k][1].replace("\n", " ")
-		if(not(currentText in allTenNegativeData) and len(currentText) != 0):
-			allTenNegativeData.append(currentText)
+		print("Final Text: ", currentText, len(currentText))
+		tempText = currentText.encode('ascii', 'ignore')
+		if(len(tempText) > 0 and not(currentText == 0x00) and not(currentText and currentText.strip()) and not(str(currentText).isspace())):
+			if(not(currentText in allTenNegativeData) and len(str(currentText)) > 0):
+				allTenNegativeData.append(currentText)
 		k += 1
+	print(allSentimentData)
 	return allTenNegativeData
 
 #Compute All Positively Connotated Messages:
@@ -78,8 +84,11 @@ def computeAllPositiveMessages(allSentimentData):
 	allTenPositiveData = []
 	k = 1 
 	while(k <= len(allSentimentData) and len(allTenPositiveData) < 10):
-		if(not(currentText in allTenPositiveData) and len(currentText) != 0):
-			allTenPositiveData.append(allSentimentData[-k][1].replace("\n", " "))
+		currentText = allSentimentData[-k][1].replace("\n", " ")
+		tempText = currentText.encode('ascii', 'ignore')
+		if(len(tempText) > 0 and not(currentText == 0x00) and not(currentText and currentText.strip()) and not(str(currentText).isspace())):
+			if(not(currentText in allTenPositiveData) and len(str(currentText)) > 0):
+				allTenPositiveData.append(currentText)
 		k += 1
 	return allTenPositiveData
 
@@ -130,6 +139,7 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		allSentimentData.append((combineSentimentValue, initialText))
 
 	print("End: Computed All Combined Sentiment Values.")
+	print(len(allSentMessages), len(allSentimentData))
 	allNegativeData = computeAllNegativeMessages(allSentimentData)
 	allPositiveData = computeAllPositiveMessages(allSentimentData)
 	#Let Client Format Data Appropriately As Desired.

@@ -77,6 +77,7 @@ def main():
 		allBodyData += "Top " + str(len(allPositiveData)) + " Positively Found Messages:\n"
 		for k in range(0, len(allPositiveData)):
 			allBodyData += "\t" + str(k+1) + ". " + allPositiveData[k] + "\n"
+	allBodyData += "\n"
 	#Loop Through All Negative Data:
 	if(len(allNegativeData) == 0):
 		allBodyData += "No Negative Data Found.\n"
