@@ -22,7 +22,9 @@ from keras.models import model_from_json
 import string
 
 #Global Variables For TensorFlow Computations:
-#Must Fix: Depreciating Eventually ...
+#Must Fix, Text Encoders Depreciating Eventually ...
+#Link For Alternative Datasets: 
+#	https://www.tensorflow.org/datasets/catalog/imdb_reviews
 currentDataSet, currentInfoData = tfds.load('imdb_reviews/subwords8k', with_info=True,
 							  as_supervised=True)
 currentEncoder = currentInfoData.features['text'].encoder

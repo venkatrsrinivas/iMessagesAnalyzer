@@ -12,7 +12,6 @@ from email.utils import formatdate
 
 #Adopted/Learned From: 
 #https://stackoverflow.com/questions/778202/smtplib-and-gmail-python-script-problems.
-
 #Helper Function To Create Email Message Object w/ Padded Information.
 def createMessageObject(inputFromAddress, inputToAddress, 
 	inputSubjectData, inputBodyData):
