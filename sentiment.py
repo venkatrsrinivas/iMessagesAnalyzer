@@ -63,14 +63,11 @@ def computeAllNegativeMessages(allSentimentData):
 	allSentimentData.sort(key = lambda currentPair: currentPair[0])
 	#Return First 10 Unique Elements.
 	allTenNegativeData = []
+	#Loop Through All Sorted Sentiment Data Or Until Ten Negative Messages Found.
 	k = 0 
 	while(k < len(allSentimentData) and len(allTenNegativeData) < 10):
-		currentText = allSentimentData[k][1].replace("\n", " ").replace("\uFFFC", "")
-		if(not(currentText == "" or currentText == " ")):
-			if(not(currentText in allTenNegativeData) and len(str(currentText)) > 0):
-				allTenNegativeData.append(currentText)
+		allTenNegativeData.append(allSentimentData[k][1])
 		k += 1
-	#print(allSentimentData)
 	return allTenNegativeData
 
 #Compute All Positively Connotated Messages:
@@ -79,12 +76,11 @@ def computeAllPositiveMessages(allSentimentData):
 	allSentimentData.sort(key = lambda currentPair: currentPair[0])
 	#Return First 10 Elements.
 	allTenPositiveData = []
+	#Loop Through All Sorted Sentiment Data Or Until Ten Positive Messages Found.
+	#NOTE: Start At k = 1 Since We Are Using -k Operator.
 	k = 1 
 	while(k <= len(allSentimentData) and len(allTenPositiveData) < 10):
-		currentText = allSentimentData[-k][1].replace("\n", " ")
-		if(not(currentText == "" or currentText == " ")):
-			if(not(currentText in allTenPositiveData)):
-				allTenPositiveData.append(currentText)
+		allTenPositiveData.append(allSentimentData[-k][1])
 		k += 1
 	return allTenPositiveData
 
@@ -121,26 +117,29 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		#Make Copy Of Current Text To Match w/ Ouput Sentiment.
 		initialText = currentMessage[1]
 		#Replace Emoji + Emoticons w/ Relevant Text Fields.
-		currentText = convertAllEmo(initialText)
-		#print(initialText, currentText)
+		convertText = convertAllEmo(initialText)
+		#print(initialText, convertText)
 		#Run Text Blob Sentiment Analyzer:
-		bValue = TextBlob(currentText).sentiment.polarity
+		bValue = TextBlob(convertText).sentiment.polarity
 		#Debug Output For Understanding Sentiment:
-		#print(currentText, currentSentiment, currentAnalyzer.polarity_scores(currentText))
-		#print(initialText, currentAnalyzer.polarity_scores(currentText)['compound'])
+		#print(convertText, currentSentiment, currentAnalyzer.polarity_scores(convertText))
+		#print(initialText, currentAnalyzer.polarity_scores(convertText)['compound'])
 		#Output All Sentiment Data.
-		vValue = currentAnalyzer.polarity_scores(currentText)['compound']
-		tValue = runHomeMadeSentimentComputation(currentText)
+		vValue = currentAnalyzer.polarity_scores(convertText)['compound']
+		tValue = runHomeMadeSentimentComputation(convertText)
 		combineSentimentValue = (bValue+vValue+tValue)/3
-		allSentimentData.append((combineSentimentValue, initialText))
+		#Check If Current Text Message Is Unique, Un-Visited, Significant.
+		formatInitialText = allSentimentData[k][1].replace("\n", " ").replace("\uFFFC", "")
+		if(len(formatInitialText) > 0 
+			and not(formatInitialText == "" or formatInitialText.isspace())
+			and not(formatInitialText in allSentimentData)):	
+			allSentimentData.append((combineSentimentValue, formatInitialText))
 
 	print("End: Computed All Combined Sentiment Values.")
-	print(len(allSentMessages), len(allSentimentData))
 	allNegativeData = computeAllNegativeMessages(allSentimentData)
 	allPositiveData = computeAllPositiveMessages(allSentimentData)
 	#Let Client Format Data Appropriately As Desired.
 	return (allPositiveData, allNegativeData)
-
 
 #Based On Input File Name,
 #Stores All iMessages Sent From User.
