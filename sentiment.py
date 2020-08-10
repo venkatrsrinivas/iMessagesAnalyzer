@@ -22,7 +22,8 @@ from keras.models import model_from_json
 import string
 
 #Global Variables For TensorFlow Computations:
-dataset, currentInfoData = tfds.load('imdb_reviews/subwords8k', with_info=True,
+#Must Fix: Depreciating Eventually ...
+currentDataSet, currentInfoData = tfds.load('imdb_reviews/subwords8k', with_info=True,
 							  as_supervised=True)
 currentEncoder = currentInfoData.features['text'].encoder
 #Load JSON File w/ Model Data + HDF5 File w/ Weight Data:
@@ -34,6 +35,11 @@ currentModel = model_from_json(currentModelReader)
 #Load Model w/ Pre-Computed Weights:
 currentModel.load_weights("allWeightData.h5")
 
+#Key Links Dealing w/ Object Replacement Character Output Bug:
+#	1. https://en.wikipedia.org/wiki/Specials_(Unicode_block)
+#	2. https://www.compart.com/en/unicode/U+FFFC
+#	3. https://www.fileformat.info/info/unicode/char/fffc/index.htm
+
 #Helper Function To Pad Zeros To Current Vector.
 def runPadZeros(currentVector, desireSize):
 	allZeroData = [0] * (desireSize - len(currentVector))
@@ -44,10 +50,10 @@ def runPadZeros(currentVector, desireSize):
 def computeSamplePrediction(inputPredictText, isPadOn):
 	#Encode Input Sample Predict Text To Run Through Model.
 	currentEncodePredictText = currentEncoder.encode(inputPredictText)
-	#Pad Additional Zeros, As NEcessary.
+	#Pad Additional Zeros, As Necessary.
 	if(isPadOn):
 		currentEncodePredictText = runPadZeros(currentEncodePredictText, 64)
-	#Appropriately Cast PRedict Text.
+	#Appropriately Cast Predict Text.
 	currentEncodePredictText = tf.cast(currentEncodePredictText, tf.float32)
 	allPredictionData = currentModel.predict(tf.expand_dims(currentEncodePredictText, 0))
 	return allPredictionData
@@ -129,7 +135,7 @@ def runAllSentimentAnalysisAlgorithms(allSentMessages):
 		tValue = runHomeMadeSentimentComputation(convertText)
 		combineSentimentValue = (bValue+vValue+tValue)/3
 		#Check If Current Text Message Is Unique, Un-Visited, Significant.
-		formatInitialText = allSentimentData[k][1].replace("\n", " ").replace("\uFFFC", "")
+		formatInitialText = initialText.replace("\n", " ").replace("\uFFFC", "")
 		if(len(formatInitialText) > 0 
 			and not(formatInitialText == "" or formatInitialText.isspace())
 			and not(formatInitialText in allSentimentData)):	
